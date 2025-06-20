@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -20,6 +19,9 @@ model Inventory {
   productId String @unique
   quantity  Int
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   histories History[]
 }
 
@@ -31,7 +33,10 @@ model History {
   newQuantity     Int
   inventoryId     String
 
-  inventory Inventory @relation(fields: [inventoryId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  inventory Inventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
 }
 
 enum ActionType {
