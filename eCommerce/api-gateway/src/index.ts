@@ -4,6 +4,7 @@ import cors from "cors";
 import morgan from "morgan";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import { configureRoutes } from "./utils";
 
 dotenv.config();
 
@@ -27,6 +28,8 @@ const limiter = rateLimit({
 });
 
 app.use("/api", limiter);
+
+configureRoutes(app);
 
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "UP" });
