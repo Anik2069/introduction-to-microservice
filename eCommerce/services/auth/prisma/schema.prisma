@@ -1,0 +1,82 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String             @id @default(uuid())
+  name             String
+  email            String             @unique
+  password         String
+  role             Role               @default(USER)
+  verified         Boolean            @default(false)
+  status           AccountStatus      @default(PENDING)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  LoginHistory     LoginHistory[]
+  VerificationCode VerificationCode[]
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum AccountStatus {
+  PENDING
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+model LoginHistory {
+  id        String       @id @default(uuid())
+  userId    String
+  ipAddress String
+  userAgent String
+  attempt   LoginAttempt @default(SUCCESS)
+  loginAt   DateTime     @default(now())
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum LoginAttempt {
+  SUCCESS
+  FAILED
+}
+
+model VerificationCode {
+  id         String               @id @default(uuid())
+  code       String
+  userId     String
+  type       VerificationCodeType @default(ACCOUNT_ACTIVATION)
+  status     VerificationStatus   @default(PENDING)
+  issuedAt   DateTime             @default(now())
+  expiresAt  DateTime
+  verifiedAt DateTime?
+  user       User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum VerificationStatus {
+  PENDING
+  USEF
+  EXPIRED
+}
+
+enum VerificationCodeType {
+  ACCOUNT_ACTIVATION
+  PASSWORD_RESET
+  EMAIL_CHANGED
+  PHONE_CHANGED
+  TWO_FACTOR_AUTH
+  TWO_FACTOR_AUTH_DISABLE
+}
