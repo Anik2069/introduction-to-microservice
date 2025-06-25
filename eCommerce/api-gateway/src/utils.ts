@@ -10,7 +10,8 @@ export const configureRoutes = (app: Express) => {
       route.methods.forEach((method) => {
 
         const handler = createHandler(method, route.path, hostname);
-        app[method](`/api/${route.path}`, handler);
+        console.log(`/api${route.path}`);
+        app[method](`/api${route.path}`, handler);
       });
     });
     // const hostname = services.url;

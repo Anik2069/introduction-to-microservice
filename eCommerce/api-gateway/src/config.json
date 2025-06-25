@@ -4,8 +4,12 @@
       "url": "http://localhost:4001",
       "routes": [
         {
+          "path": "/products",
+          "methods": ["get"]
+        },
+        {
           "path": "/product",
-          "methods": ["get", "post"]
+          "methods": ["post"]
         },
         {
           "path": "/product/:id",
