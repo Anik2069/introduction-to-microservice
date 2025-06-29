@@ -2,11 +2,13 @@ import { Request, Response, NextFunction } from "express";
 import prisma from "@/prisma";
 import { UserCreateDTOSchema } from "@/schema";
 import bcrypt from "bcryptjs";
+import { USER_SERVICE_URL } from "@/config";
+import axios from "axios";
 const userRegistration = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<any> => {
   try {
     // Validate the input data against the schema
     const parsedData = UserCreateDTOSchema.safeParse(req.body);
@@ -41,11 +43,21 @@ const userRegistration = async (
         email: true,
         role: true,
         status: true,
+        name: true,
       },
     });
-    // Respond with the inventory item
+
+    await axios.post(`${USER_SERVICE_URL}/user`, {
+      authUserId: newUser.id,
+      name: newUser.name,
+      email: newUser.email,
+    });
+    // generate verification code
+    // send verficication email
     res.status(201).json(newUser);
   } catch (error) {
     next(error);
   }
 };
+
+export default userRegistration;

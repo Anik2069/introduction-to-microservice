@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import morgan from "morgan";
 
-import { createUser, getUserById } from "./controllers";
+import { userLogin, userRegistration } from "./controllers";
 dotenv.config();
 
 const app = express();
@@ -18,8 +18,9 @@ app.get("/health", (req, res) => {
 });
 
 // app.put('/inventories/:id', updateInventory);
-app.get("/user/:id", getUserById);
-app.post("/user", createUser);
+// app.get("/user/:id", getUserById);
+app.post("/registration", userRegistration);
+app.post("/login", userLogin);
 
 // Handle 404
 app.use((req, res) => {
