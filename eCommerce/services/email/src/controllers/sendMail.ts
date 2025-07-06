@@ -10,6 +10,7 @@ const sendEmail = async (req: Request, res: Response, next: NextFunction): Promi
         const parsedData = EmailCreateDTOSchema.safeParse(req.body);
         if (!parsedData.success) {
             // If validation fails, respond with a 400 status and the validation errors
+         
             return res.status(400).json({
                 message: "Invalid input data",
                 errors: parsedData.error.errors,

@@ -17,7 +17,7 @@ app.get("/health", (req, res) => {
   res.status(200).json({ status: "UP" });
 });
 
-app.post('/emails.send', sendEmail);
+app.post('/email/send', sendEmail);
 app.get('/emails', getEmails);
 
 // Handle 404

@@ -68,7 +68,7 @@ model VerificationCode {
 
 enum VerificationStatus {
   PENDING
-  USEF
+  USED
   EXPIRED
 }
 
