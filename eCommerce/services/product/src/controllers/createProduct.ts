@@ -67,5 +67,8 @@ const createProduct = async (req: Request, res: Response, next: NextFunction): P
         return;
     }
 }
+const updateProduct = async(req)=>{
+
+}
 
 export default createProduct;

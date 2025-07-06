@@ -18,6 +18,8 @@ const userLogin = async (
   next: NextFunction
 ): Promise<any> => {
   try {
+    const ipAddress = req.headers["x-forwarded-for"] as string || req.ip || "";
+    const uesrAgent = req.headers["user-agent"] || "";
     const parsedData = UserLoginSchema.safeParse(req.body);
 
     if (!parsedData.success) {
@@ -34,6 +36,14 @@ const userLogin = async (
       },
     });
     if (!user) {
+      await createLoginHistory(
+        {
+          userId: "Guest",
+          userAgent: uesrAgent,
+          ip: ipAddress,
+          attempt: "FAILED",
+        }
+      )
       return res.status(404).json({
         message: "User not found",
       });
@@ -45,16 +55,46 @@ const userLogin = async (
     );
 
     if (!isMatch) {
+      await createLoginHistory(
+        {
+          userId: user.id,
+          userAgent: uesrAgent,
+          ip: ipAddress,
+          attempt: "FAILED",
+        }
+      )
       return res.status(401).json({
         message: "Invalid credentials",
       });
     }
 
     if (!user.verified) {
+      await createLoginHistory(
+        {
+          userId: user.id,
+          userAgent: uesrAgent,
+          ip: ipAddress,
+          attempt: "FAILED",
+        }
+      )
+      return res.status(401).json({
+        message: "User is not Verified",
+      });
+    }
+    if (user.status != "ACTIVE") {
+      await createLoginHistory(
+        {
+          userId: user.id,
+          userAgent: uesrAgent,
+          ip: ipAddress,
+          attempt: "FAILED",
+        }
+      )
       return res.status(401).json({
         message: "User is not active",
       });
     }
+
 
     const accessToken = jwt.sign(
       { userId: user.id, email: user.email, role: user.role, name: user.name },
@@ -63,8 +103,16 @@ const userLogin = async (
         expiresIn: "1d",
       }
     );
-    const ipAddress = req.headers["x-forwarded-for"] || req.ip || "";
-    const uesrAgent = req.headers["user-agent"] || "";
+
+
+    await createLoginHistory(
+      {
+        userId: user.id,
+        userAgent: uesrAgent,
+        ip: ipAddress,
+        attempt: "SUCCESS",
+      }
+    )
 
     return res.status(200).json({ accessToken });
   } catch (error) {
