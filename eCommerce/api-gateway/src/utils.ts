@@ -1,23 +1,25 @@
 import { Express, Request, Response } from "express";
 import services from "./config.json";
 import axios from "axios";
+import middlewares from "./middleware";
 
 export const configureRoutes = (app: Express) => {
   Object.entries(services.services).forEach(([name, service]) => {
     const hostname = service.url;
     service.routes.forEach((route) => {
       route.methods.forEach((method) => {
+        const middleware = getMiddlewares(route.middlewares);
         const handler = createHandler(method, route.path, hostname);
-        console.log(`/api${route.path}`);
-        app[method](`/api${route.path}`, handler);
+        console.log(`/api${route.path}`, middleware);
+        app[method](`/api${route.path}`, middleware, handler);
       });
     });
     // const hostname = services.url;
   });
 };
 
-const concateMiddlewares = (middlewares: string[]) => {
-  return middlewares.join(",");
+const getMiddlewares = (names: string[]) => {
+  return names.map((name) => middlewares[name]);
 };
 
 export const createHandler = (
@@ -28,10 +30,23 @@ export const createHandler = (
   //closure
   return async (req: Request, res: Response) => {
     try {
+      let url = `${hostname}${path}`;
+      req.params &&
+        Object.keys(req.params).forEach((param) => {
+          url = url.replace(`:${param}`, req.params[param]);
+        });
       const { data } = await axios({
         method,
-        url: `${hostname}${path}`,
+        url: url,
         data: req.body,
+        headers: {
+          origin: "http://localhost:8081",
+          "x-user-id": req.headers["x-user-id"],
+          "x-user-email": req.headers["x-user-email"],
+          "x-user-name": req.headers["x-user-name"],
+          "x-user-role": req.headers["x-user-role"],
+          "user-agent": req.headers["user-agent"],
+        },
       });
 
       return res.json(data);

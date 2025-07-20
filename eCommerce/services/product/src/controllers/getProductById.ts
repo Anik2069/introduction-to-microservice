@@ -6,7 +6,6 @@ import { INVENTORY_URL } from '@/config';
 const getProductById = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     try {
         const { id } = req.params;
-
         const product = await prisma.product.findUnique({
             where: {
                 id: id,

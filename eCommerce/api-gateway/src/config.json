@@ -6,7 +6,7 @@
         {
           "path": "/products",
           "methods": ["get"],
-          "middlewares": ["auth", "admin"]
+          "middlewares": ["auth"]
         },
         {
           "path": "/product",
@@ -31,7 +31,7 @@
         {
           "path": "/inventories/:id/details",
           "methods": ["get"],
-          "middlewares": []
+          "middlewares": ["auth"]
         }
       ]
     },
