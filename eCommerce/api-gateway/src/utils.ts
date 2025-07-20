@@ -4,11 +4,9 @@ import axios from "axios";
 
 export const configureRoutes = (app: Express) => {
   Object.entries(services.services).forEach(([name, service]) => {
-
     const hostname = service.url;
     service.routes.forEach((route) => {
       route.methods.forEach((method) => {
-
         const handler = createHandler(method, route.path, hostname);
         console.log(`/api${route.path}`);
         app[method](`/api${route.path}`, handler);
@@ -16,6 +14,10 @@ export const configureRoutes = (app: Express) => {
     });
     // const hostname = services.url;
   });
+};
+
+const concateMiddlewares = (middlewares: string[]) => {
+  return middlewares.join(",");
 };
 
 export const createHandler = (
