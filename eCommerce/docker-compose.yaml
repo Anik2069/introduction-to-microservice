@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   postgres:
@@ -14,7 +14,7 @@ services:
     volumes:
       - postgres:/var/lib/postgresql/data
     healthcheck:
-      test: [ 'CMD', 'pg_isready', '-U', "auth" ]
+      test: ["CMD", "pg_isready", "-U", "auth"]
       interval: 30s
       timeout: 30s
       retries: 5
@@ -39,6 +39,18 @@ services:
     volumes:
       - mailhog:/var/lib/mailhog
 
+  redis-stack:
+    image: redis/redis-stack:latest
+    container_name: redis-stack-server
+    restart: on-failure
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+    volumes:
+      - redis-stack:/var/lib/redis-stack
+    environment:
+      - REDIS_ARGS=--save 900 1
 volumes:
   postgres:
   mailhog:
+  redis-stack:
