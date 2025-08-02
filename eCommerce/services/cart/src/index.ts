@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import morgan from "morgan";
 import helmet from "helmet";
+import { addToCart } from "./controllers";
 
 
 dotenv.config();
@@ -16,7 +17,7 @@ app.use(morgan("dev"));
 app.use(helmet());
 
 
-
+app.post("/cart/add-to-cart",  addToCart);
 
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "UP" });
