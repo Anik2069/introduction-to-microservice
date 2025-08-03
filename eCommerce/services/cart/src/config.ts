@@ -15,5 +15,5 @@ export const CART_TTL = process.env.CART_TTL
   ? parseInt(process.env.CART_TTL)
   : 900;
 
-export const INVENTORY_SERVICE_URL = process.env.INVENTORY_SERVICE_URL || "http://localhost:4001";
+export const INVENTORY_SERVICE_URL = process.env.INVENTORY_SERVICE_URL || "http://localhost:4002";
 
