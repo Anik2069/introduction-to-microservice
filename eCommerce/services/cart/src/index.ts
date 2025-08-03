@@ -4,7 +4,7 @@ import cors from "cors";
 import morgan from "morgan";
 import helmet from "helmet";
 import { addToCart, getMyCart } from "./controllers";
-
+import './events/onKeyExpires';
 dotenv.config();
 
 const app = express();
