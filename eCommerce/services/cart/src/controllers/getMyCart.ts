@@ -25,7 +25,21 @@ const getMyCart = async (
 
     const cartItems = await redis.hgetall(`cart:${cartSessionId}`);
 
-    return res.status(200).json({ data: cartItems });
+    if (Object.keys(cartItems).length === 0) {
+      return res.status(200).json({ data: [] });
+    }
+
+    const formattedCartItems = Object.entries(cartItems).map(
+      ([productId, item]) => {
+        const { quantity, inventoryId } = JSON.parse(item) as {
+          inventoryId: string;
+          quantity: number;
+        };
+        return { productId, inventoryId, quantity };
+      }
+    );
+
+    return res.status(200).json({ data: formattedCartItems });
   } catch (error) {
     console.error("Error retrieving cart:", error);
     return res.status(500).json({ message: "Internal Server Error" });
