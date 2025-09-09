@@ -16,7 +16,7 @@ export const clearCart = async (cartId: string) => {
       return { inventoryID, quantity, productID: key };
     });
 
-    
+    return true;
   } catch (error) {
     console.error("Error clearing cart:", error);
     throw new Error("Failed to clear cart");
